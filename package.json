@@ -9,8 +9,8 @@
     "copy": "copyfiles -f ./public/src/index.html ./public/dist",
     "dist": "npm run clean & npm run copy & webpack --mode production",
     "dev": "npm run clean & npm run copy & webpack --mode development",
-    "express": "node index.js",
-    "devServer": "nodemon index.js",
+    "express": "node server.js",
+    "devServer": "nodemon server.js",
     "devReact": "webpack-dev-server --open",
     "release":"npm run dist & npm run express",
     "server":"npm run dev & npm run devServer"
