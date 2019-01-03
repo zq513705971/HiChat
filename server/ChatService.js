@@ -122,15 +122,14 @@ ChatService.prototype._sendMsg = function (socket, data) {
     var conversationType = data.conversationType;
 
     var fromUser = this._getUserInfo(socket);
-
-    var userIds = this._getTargetIds(conversationType, targetId);
-    if (userIds.indexOf(fromUser.userName) == -1) {
-        //userIds.push(fromUser.userName);
-    }
-    var sockets = this._getSockets(userIds);
-
     if (fromUser) {
-        data = { ...data, from: { userName: fromUser.userName } };
+        var userIds = this._getTargetIds(conversationType, targetId);
+        if (userIds.indexOf(fromUser.userName) == -1) {
+            //console.log("fromUser", fromUser);
+            userIds.push(fromUser.userName);
+        }
+        var sockets = this._getSockets(userIds);
+        data = { ...data, time: new Date().getTime(), from: { userName: fromUser.userName }, messageId: Utils.guid() };
 
         this._send(sockets, data);
     }
