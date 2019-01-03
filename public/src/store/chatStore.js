@@ -34,20 +34,32 @@ class ChatStore {
         });
     }
 
+    _getPrivateTarget = (targetId) => {
+        var self = this;
+        var target = self.friendHistory.find((friend) => {
+            return friend.targetId == targetId;
+        });
+        return target;
+    }
+
+    _getGroupTarget = (targetId) => {
+        var self = this;
+        var target = self.groupHistory.find((group) => {
+            return group.targetId == targetId;
+        });
+        return target;
+    }
+
     _getTarget = (data) => {
         var self = this;
         var target = undefined;
         switch (data.conversationType) {
             case "PRIVATE": {
-                target = self.friendHistory.find((friend) => {
-                    return (data.from.userName == self.userName && friend.targetId == data.targetId) || friend.targetId == data.from.userName;
-                });
+                target = self._getPrivateTarget(data.from.userName == self.userName ? data.targetId : data.from.userName);
                 break;
             }
             case "GROUP": {
-                target = self.groupHistory.find((group) => {
-                    return group.targetId == data.targetId;
-                });
+                target = self._getGroupTarget(data.targetId);
                 break;
             }
         }
@@ -67,12 +79,14 @@ class ChatStore {
                     if (!target) {
                         self.friendHistory.push({
                             targetId: targetId,
+                            recent: data,
                             history: [data]
                         });
                     }
-                    else
+                    else {
                         target.history.push(data);
-
+                        target.recent = data;
+                    }
                     //console.log("PRIVATE", target);
                     break;
                 }
@@ -81,11 +95,14 @@ class ChatStore {
                     if (!target) {
                         self.groupHistory.push({
                             targetId: data.targetId,
+                            recent: data,
                             history: [data]
                         });
                     }
-                    else
+                    else {
                         target.history.push(data);
+                        target.recent = data;
+                    }
 
                     //console.log("GROUP", target);
                     break;
@@ -137,9 +154,15 @@ class ChatStore {
 
     @computed
     get groupList() {
+        var self = this;
         var newData = [];
-        this.groups.forEach(group => {
-            var _group = { ...group, targetId: group.groupId, targetName: group.groupName, conversationType: "GROUP" }
+        self.groups.forEach(group => {
+            var target = self._getGroupTarget(group.groupId);
+            var _group = {
+                ...group,
+                recent: target && target.recent,
+                targetId: group.groupId, targetName: group.groupName, conversationType: "GROUP"
+            }
             newData.push(_group);
         });
         return newData;
@@ -147,9 +170,15 @@ class ChatStore {
 
     @computed
     get friendList() {
+        var self = this;
         var newData = [];
-        this.friends.forEach(friend => {
-            var _friend = { ...friend, targetId: friend.userName, targetName: friend.userName, conversationType: "PRIVATE" }
+        self.friends.forEach(friend => {
+            var target = self._getPrivateTarget(friend.userName);
+            var _friend = {
+                ...friend,
+                recent: target && target.recent,
+                targetId: friend.userName, targetName: friend.userName, conversationType: "PRIVATE"
+            }
             newData.push(_friend);
         });
         return newData;
@@ -170,16 +199,12 @@ class ChatStore {
             return messages;
         switch (target.conversationType) {
             case "PRIVATE":
-                var targetObj = this.friendHistory.find(friend => {
-                    return friend.targetId == target.userName;
-                });
+                var targetObj = this._getPrivateTarget(target.userName);
                 if (targetObj)
                     messages = targetObj.history;
                 break;
             case "GROUP":
-                var targetObj = this.groupHistory.find(group => {
-                    return group.targetId == target.groupId;
-                });
+                var targetObj = this._getGroupTarget(target.groupId);
                 if (targetObj)
                     messages = targetObj.history;
                 break;

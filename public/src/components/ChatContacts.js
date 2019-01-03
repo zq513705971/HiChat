@@ -14,7 +14,7 @@ export default class ChatContacts extends React.Component {
         };
     }
 
-    _renderFriends = () => {
+    _renderConversations = () => {
         var { store } = this.state;
         var { contacts } = store;
         //console.log(contacts)
@@ -33,7 +33,7 @@ export default class ChatContacts extends React.Component {
                 </div>
                 <div className="contacts-content">
                     {
-                        this._renderFriends()
+                        this._renderConversations()
                     }
                 </div>
             </div>

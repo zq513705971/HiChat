@@ -90,20 +90,79 @@ body {
     border-bottom-right-radius: 5px;
     border: 1px solid #337ab7;
     box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .chat-window .chat-container .main .contacts .contacts-content .contact-item {
-    height: 28px;
+    height: 48px;
     background: #fff;
     border-bottom: 1px dotted #ccc;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 0 5px;
 }
 
+.chat-window .chat-container .main .contacts .contacts-content .selected {
+    background: #ccc;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .contact-image {
+    height: 48px;
+    width: 48px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .contact-image .icon {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #f2f2f2;
+    cursor: pointer;
+    border-radius: 45px;
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .contact-content {
+    height: 48px;
+    flex: 1;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .target {
+    height: 28px;
+    flex: 1;
+    font-size: 16px;
+    padding: 0 5px;
+    color: #333;
+    align-items: center;
+    display: flex;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .recent {
+    font-size: 10px;
+    padding: 0 5px;
+    color: #808080;
+    display: flex;
+}
+
+.chat-window .chat-container .main .contacts .contacts-content .contact-item .recent-msg {
+    font-size: 10px;
+    padding: 0 5px;
+    color: #808080;
+    word-break: break-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap !important;
+    height: 20px;
+    line-height: 20px;
+    max-width: 120px
+}
+
 .chat-window .chat-container .main .contacts .contacts-content .contact-item:hover {
-    background: #f2f2f2;
+    background: #ebebeb;
 }
 
 .chat-window .chat-container .main .dialog {
@@ -149,7 +208,7 @@ body {
 }
 
 .chat-window .chat-container .main .dialog .dialog-messages {
-    flex: 9;
+    height: 330px;
     width: 100%;
     background: #fff;
     border: 1px solid #337ab7;
@@ -238,6 +297,10 @@ body {
     justify-content: flex-start;
 }
 
+.chat-window .chat-container .main .dialog .dialog-messages .message-send .message-header {
+    justify-content: flex-end;
+}
+
 .chat-window .chat-container .main .dialog .dialog-messages .message-send .message-info {
     border: 1px solid #38f;
     background: #38f;
@@ -250,13 +313,13 @@ body {
 }
 
 .chat-window .chat-container .main .dialog .dialog-control {
-    flex: 0.5;
+    height: 32px;
     width: 100%;
     background: #808080;
 }
 
 .chat-window .chat-container .main .dialog .dialog-input {
-    flex: 2;
+    height: 140px;
     width: 100%;
     background: red;
     border: 1px solid #337ab7;
@@ -268,13 +331,13 @@ body {
 }
 
 .chat-window .chat-container .main .dialog .dialog-input .input-area {
-    flex: 4;
+    flex: 1;
     width: 100%;
     box-sizing: border-box;
 }
 
 .chat-window .chat-container .main .dialog .dialog-input .input {
-    flex: 2;
+    height: 36px;
     width: 100%;
     box-sizing: border-box;
     padding: 2px;

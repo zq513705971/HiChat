@@ -15,12 +15,24 @@ export default class ChatContactItem extends React.Component {
     }
 
     render() {
-        var { data } = this.props;
+        var { data, store } = this.props;
+        var { selectedTarget } = store;
         return (
             <div className="contact-item" onClick={this._onSelect}>
-                {
-                    data.targetName
-                }
+                <div className="contact-image">
+                    <img src={require("../images/temp.png")} className="icon" />
+                </div>
+                <div className="contact-content">
+                    <div className="target">{data.targetName}
+                    </div>
+                    <div className="recent">
+                        <div className="recent-msg">
+                            {
+                                data.recent && data.recent.content
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
