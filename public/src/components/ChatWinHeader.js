@@ -15,7 +15,7 @@ export default class ChatWinHeader extends React.Component {
     render() {
         return (
             <div className="header">
-                header
+                HiChat :)
             </div>
         );
     }

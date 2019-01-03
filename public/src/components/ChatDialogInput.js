@@ -8,9 +8,9 @@ export default class ChatDialogInput extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("props", props);
+        //console.log("props", props);
         this.state = {
-            content: undefined
+            content: ""
         };
     }
 
@@ -19,6 +19,11 @@ export default class ChatDialogInput extends React.Component {
         var { selectedTarget } = store;
         //console.log("selectedTarget", selectedTarget);
         var { content } = this.state;
+        if (content.length == 0) {
+            alert("请输入消息!");
+            this.refs.input.focus();
+            return;
+        }
         var { targetId, conversationType } = selectedTarget;
 
         var messageType = "TextMessage";
@@ -39,7 +44,7 @@ export default class ChatDialogInput extends React.Component {
         var { store } = this.props;
         return (
             <div className="dialog-input">
-                <textarea className="input-area" onChange={this._inputChange} value={this.state.content}></textarea>
+                <textarea ref={"input"} className="input-area" onChange={this._inputChange} value={this.state.content}></textarea>
                 <div className="input">
                     <input onClick={this._sendMessage} className="submit-send" type="button" value="发送消息" />
                 </div>

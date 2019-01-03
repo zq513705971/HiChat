@@ -8,7 +8,7 @@ export default class ChatDialogControl extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("props", props);
+        //console.log("props", props);
     }
 
     render() {

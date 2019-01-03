@@ -28,7 +28,9 @@ export default class ChatContacts extends React.Component {
     render() {
         return (
             <div className="contacts">
-                <div className="contacts-header"></div>
+                <div className="contacts-header">
+                    联系人
+                </div>
                 <div className="contacts-content">
                     {
                         this._renderFriends()

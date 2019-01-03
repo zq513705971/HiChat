@@ -14,18 +14,42 @@ export default class ChatMessage extends React.Component {
     render() {
         var { msg } = this.props;
         return (
-            msg.direction == 'RECEIVE' ?
-                <div className="message-item message-receive">
-                    <div className="message-content">
-                        {JSON.stringify(msg)}
-                    </div>
-                </div>
-                :
-                <div className="message-item message-send">
-                    <div className="message-content">
-                        {JSON.stringify(msg)}
-                    </div>
-                </div>
+            <div className="message-item">
+                <div className="message-time">{new Date(msg.time).toLocaleString()}</div>
+                {
+                    msg.direction == 'RECEIVE' ?
+                        <div className="message-block message-receive">
+                            <div className="message-content">
+                                <div className="message-target" title={msg.from.userName}>
+                                    <img src={require("../images/temp.png")} className="message-icon" />
+                                </div>
+                                <div className="message-obj">
+                                    <div className="message-header">
+                                        {msg.from.userName}
+                                    </div>
+                                    <div className="message-info">
+                                        {msg.content}
+                                    </div>
+                                </div>
+                            </div>
+                        </div> :
+                        <div className="message-block message-send">
+                            <div className="message-content">
+                                <div className="message-obj">
+                                    <div className="message-header">
+                                        {msg.from.userName}
+                                    </div>
+                                    <div className="message-info">
+                                        {msg.content}
+                                    </div>
+                                </div>
+                                <div className="message-target" title={msg.from.userName}>
+                                    <img src={require("../images/temp.png")} className="message-icon" />
+                                </div>
+                            </div>
+                        </div>
+                }
+            </div>
         );
     }
 }

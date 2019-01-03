@@ -74,12 +74,18 @@ body {
     background: #337ab7;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 10px;
+    color: #fff;
+    font-size: 18px;
 }
 
 .chat-window .chat-container .main .contacts .contacts-content {
     flex: 1;
     width: 100%;
-    background: #f2f2f2;
+    background: #fff;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border: 1px solid #337ab7;
@@ -97,7 +103,7 @@ body {
 }
 
 .chat-window .chat-container .main .contacts .contacts-content .contact-item:hover {
-    background: #ccc;
+    background: #f2f2f2;
 }
 
 .chat-window .chat-container .main .dialog {
@@ -121,6 +127,12 @@ body {
     background: #337ab7;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    align-items: center;
+    display: flex;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 .chat-window .chat-container .main .dialog .dialog-content {
@@ -151,6 +163,69 @@ body {
 
 .chat-window .chat-container .main .dialog .dialog-messages .message-content {
     max-width: 60%;
+    padding: 0 5px 5px 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-content .message-icon {
+    flex: 1;
+    height: 100%;
+    border-radius: 50px;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-content .message-target {
+    width: 48px;
+    height: 48px;
+    border: 1px solid #f2f2f2;
+    cursor: pointer;
+    border-radius: 50px;
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-content .message-obj {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1px 5px;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-content .message-header {
+    height: 20px;
+    display: flex;
+    font-size: 14px;
+    padding: 0 2px;
+    color: #808080;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-content .message-info {
+    flex: 1;
+    word-break: break-all;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-item {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-item .message-time {
+    flex: 1;
+    /* height: 24px; */
+    padding: 2px 0 0 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+    color: #808080;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-item .message-block {
+    display: flex;
+    flex-direction: row;
 }
 
 .chat-window .chat-container .main .dialog .dialog-messages .message-send {
@@ -163,10 +238,21 @@ body {
     justify-content: flex-start;
 }
 
+.chat-window .chat-container .main .dialog .dialog-messages .message-send .message-info {
+    border: 1px solid #38f;
+    background: #38f;
+    color: #fff;
+}
+
+.chat-window .chat-container .main .dialog .dialog-messages .message-receive .message-info {
+    border: 1px solid #ebebeb;
+    background: #ebebeb;
+}
+
 .chat-window .chat-container .main .dialog .dialog-control {
     flex: 0.5;
     width: 100%;
-    background: blue;
+    background: #808080;
 }
 
 .chat-window .chat-container .main .dialog .dialog-input {
@@ -207,6 +293,12 @@ body {
 
 .chat-window .chat-container .header {
     flex: 1;
-    background: #ccc;
+    background: #337ab7;
     width: 100%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 10px;
+    color: #fff;
+    font-size: 24px;
 }

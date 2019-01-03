@@ -3,8 +3,8 @@ import io from 'socket.io-client';
 
 class ChatStore {
     @observable appKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
-    @observable userName = "zhanqun";
-    @observable passCode = "zhanqun";
+    @observable userName = "smallbyte";
+    @observable passCode = "smallbyte";
     @observable connected = false;
     @observable logined = false;
     @observable token = '';
@@ -58,7 +58,7 @@ class ChatStore {
         var self = this;
         if (self.connected && self.logined) {
             var target = self._getTarget(data);
-            console.log("receivedMsg", data, target);
+            //console.log("receivedMsg", data, target);
             var direction = self.userName == data.from.userName ? "SEND" : "RECEIVE";//RECEIVE->接收，SEND->发送
             data.direction = direction;
             switch (data.conversationType) {
