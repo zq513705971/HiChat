@@ -56,7 +56,7 @@ ChatService.prototype._signIn = function (socket, appKey, user, callback) {
     userInfo.sockets.push(socket);
     console.log(userInfo.userName, userInfo.token);
 
-    var friends = self._getLoginedUsers(appKey, userInfo.userName);
+    var friends = self._getFriends(appKey, userInfo.userName);
 
     callback && callback({ userName: userInfo.userName, token: userInfo.token, friends });
 
@@ -64,7 +64,10 @@ ChatService.prototype._signIn = function (socket, appKey, user, callback) {
     socket.broadcast.emit("newSignIn", loginedUser);
 }
 
-ChatService.prototype._getLoginedUsers = function (appKey, userName) {
+/**
+ * 获取应用内好友信息
+ */
+ChatService.prototype._getFriends = function (appKey, userName) {
     var self = this;
 
     var users = [];
@@ -115,6 +118,9 @@ ChatService.prototype._disconnect = function (socket) {
     console.log(userInfo.userName + "-disconnect-" + sockets.length);
 }
 
+/**
+ * 向socket发送数据
+ */
 ChatService.prototype._sendMsg = function (socket, data) {
     //conversationType=PRIVATE->私聊（userId），conversationType=GROUP->群组(groupId)
     var targetId = data.targetId;
@@ -135,6 +141,10 @@ ChatService.prototype._sendMsg = function (socket, data) {
     }
 }
 
+/**
+ * 获取用户对应的已连接的socket
+ * 一个人可对应多个连接
+ */
 ChatService.prototype._getUserSockets = function (userId) {
     var self = this;
     var userInfo = self.userInfos.get(userId);
@@ -143,6 +153,9 @@ ChatService.prototype._getUserSockets = function (userId) {
     return [];
 }
 
+/**
+ * 获取用户群组sockets
+ */
 ChatService.prototype._getSockets = function (userIds) {
     var self = this;
     var sockets = [];
@@ -154,6 +167,9 @@ ChatService.prototype._getSockets = function (userIds) {
     return sockets;
 }
 
+/**
+ * 往目标sockets发送数据
+ */
 ChatService.prototype._send = function (sockets, data) {
     //Text,Image,File,TypingStatusMessage
     var messageType = data.messageType;
@@ -167,6 +183,11 @@ ChatService.prototype._send = function (sockets, data) {
     }
 }
 
+/**
+ * 向会话对象发送消息
+ * Private ->私聊
+ * Group ->群聊
+ */
 ChatService.prototype._getTargetIds = function (conversationType, targetId) {
     var self = this;
     var targets = [];
