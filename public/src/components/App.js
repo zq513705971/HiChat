@@ -21,17 +21,6 @@ class App extends React.Component {
         var self = this;
     }
 
-    onClick() {
-        var { store } = this.state;
-        var [targetId, conversationType, messageType, content] = ["shaoqin", "PRIVATE", "TextMessage", "Helloworld!"];
-        store.sendMessage(targetId, conversationType, messageType, content);
-    }
-
-    onChange(e) {
-        var { store } = this.state;
-        store.userName = e.target.value;
-    }
-
     render() {
         var { store } = this.state;
         var { logined, connected } = store;
