@@ -3,15 +3,12 @@ import io from 'socket.io-client';
 
 class ChatStore {
     @observable appKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
-    @observable userName = "smallbyte";
-    @observable passCode = "smallbyte";
+    @observable userId = "smallbyte";
+    @observable password = "smallbyte";
     @observable connected = false;
     @observable logined = false;
     @observable token = '';
-    @observable friends = [];
-    @observable groups = [];
-    @observable friendHistory = [];
-    @observable groupHistory = [];
+    @observable conversations = [];
 
     @observable socket = undefined;
     @observable selectedTarget = undefined;
@@ -23,29 +20,28 @@ class ChatStore {
     _connect = () => {
         var self = this;
         var socket = self.socket;
+        console.log(socket);
         socket.on('connect', function () {
             console.log('connected to server++++++++++++++++');
             self.connected = true;
         });
         socket.on("receivedMsg", self._receivedMsg);
         socket.on("newSignIn", self._newSignIn);
+        socket.on("onTyping", self._onTyping);
         socket.on("disconnect", () => {
             self.connected = false;
         });
     }
 
-    _getPrivateTarget = (targetId) => {
+    _onTyping = (data) => {
         var self = this;
-        var target = self.friendHistory.find((friend) => {
-            return friend.targetId == targetId;
-        });
-        return target;
+        //console.log(data);
     }
 
-    _getGroupTarget = (targetId) => {
+    _getConversationTarget = (conversationType, targetId) => {
         var self = this;
-        var target = self.groupHistory.find((group) => {
-            return group.targetId == targetId;
+        var target = self.conversations.find((conversation) => {
+            return conversation.conversationType == conversationType && conversation.targetId == targetId;
         });
         return target;
     }
@@ -55,11 +51,11 @@ class ChatStore {
         var target = undefined;
         switch (data.conversationType) {
             case "PRIVATE": {
-                target = self._getPrivateTarget(data.from.userName == self.userName ? data.targetId : data.from.userName);
+                target = self._getConversationTarget(data.conversationType, data.from == self.userId ? data.targetId : data.from);
                 break;
             }
             case "GROUP": {
-                target = self._getGroupTarget(data.targetId);
+                target = self._getConversationTarget(data.conversationType, data.targetId);
                 break;
             }
         }
@@ -67,67 +63,23 @@ class ChatStore {
     }
 
     _receivedMsg = (data) => {
+        console.log("_receivedMsg", data);
+
         var self = this;
         if (self.connected && self.logined) {
             var target = self._getTarget(data);
-            //console.log("receivedMsg", data, target);
-            var direction = self.userName == data.from.userName ? "SEND" : "RECEIVE";//RECEIVE->接收，SEND->发送
+            var direction = self.userId == data.from ? "send" : "receive";//RECEIVE->接收，SEND->发送
             data.direction = direction;
-            switch (data.conversationType) {
-                case "PRIVATE": {
-                    var targetId = direction == "RECEIVE" ? data.from.userName : data.targetId;
-                    if (!target) {
-                        self.friendHistory.push({
-                            targetId: targetId,
-                            recent: data,
-                            history: [data]
-                        });
-                    }
-                    else {
-                        target.history.push(data);
-                        target.recent = data;
-                    }
-                    //console.log("PRIVATE", target);
-                    break;
-                }
-                case "GROUP": {
-                    data.direction = direction;
-                    if (!target) {
-                        self.groupHistory.push({
-                            targetId: data.targetId,
-                            recent: data,
-                            history: [data]
-                        });
-                    }
-                    else {
-                        target.history.push(data);
-                        target.recent = data;
-                    }
 
-                    //console.log("GROUP", target);
-                    break;
-                }
+            if (!target.historys) {
+                target.historys = [];
             }
+            target.historys.push(data);
+            target.recent = data;
         }
     }
 
-    _newSignIn = (data) => {
-        var self = this;
-        if (self.connected && self.logined && self.userName != data.userName) {
-            //console.log("_newSignIn", data);
-            self.friends.push(data);
-        }
-    }
-
-    @action
-    login = () => {
-        var self = this;
-        self.socket.emit('user/signIn', { userName: self.userName, passCode: self.passCode }, function (data) {
-            self.logined = !!data.token;
-            self.token = data.token;
-            self.friends = self.friends.concat(data.friends);
-        });
-    }
+    _newSignIn = (data) => { }
 
     @action
     _sendMsg = (data) => {
@@ -152,65 +104,38 @@ class ChatStore {
         this.selectedTarget = target;
     }
 
-    @computed
-    get groupList() {
+    @action
+    typing = () => {
         var self = this;
-        var newData = [];
-        self.groups.forEach(group => {
-            var target = self._getGroupTarget(group.groupId);
-            var _group = {
-                ...group,
-                recent: target && target.recent,
-                targetId: group.groupId, targetName: group.groupName, conversationType: "GROUP"
-            }
-            newData.push(_group);
-        });
-        return newData;
+        var conversationType = this.selectedTarget.conversationType;
+        var targetId = this.selectedTarget.targetId;
+        self.socket.emit("typing", { conversationType, targetId });
     }
 
-    @computed
-    get friendList() {
+    @action
+    login = () => {
         var self = this;
-        var newData = [];
-        self.friends.forEach(friend => {
-            var target = self._getPrivateTarget(friend.userName);
-            var _friend = {
-                ...friend,
-                recent: target && target.recent,
-                targetId: friend.userName, targetName: friend.userName, conversationType: "PRIVATE"
+        self.logined = false;
+        self.socket.emit('user/signIn', { userId: self.userId, password: self.password }, function (result) {
+            if (result.code == 0) {
+                var data = result.msg;
+                self.logined = !!data.token;
+                self.token = data.token;
+                self.conversations = self.conversations.concat(data.conversations);
+                console.log(data);
             }
-            newData.push(_friend);
+            else
+                alert(result.msg);
         });
-        return newData;
     }
 
     @computed
-    get contacts() {
-        //console.log("friendList", toJS(this.groupList))
-        return [].concat(this.groupList, this.friendList);
-    }
-
-    @computed
-    get selectedHistory() {
-        var target = this.selectedTarget;
-        var messages = [];
-        //console.log("target", target)
-        if (!target)
-            return messages;
-        switch (target.conversationType) {
-            case "PRIVATE":
-                var targetObj = this._getPrivateTarget(target.userName);
-                if (targetObj)
-                    messages = targetObj.history;
-                break;
-            case "GROUP":
-                var targetObj = this._getGroupTarget(target.groupId);
-                if (targetObj)
-                    messages = targetObj.history;
-                break;
-        }
-        //console.log("messages", messages);
-        return messages;
+    get historys() {
+        var self = this;
+        if (!self.selectedTarget)
+            return [];
+        var target = self._getConversationTarget(self.selectedTarget.conversationType, self.selectedTarget.targetId);
+        return target && target.historys;
     }
 }
 

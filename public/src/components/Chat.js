@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer, inject } from "mobx-react";
-import * as style from '../styles/app.css';
-import ChatWinHeader from './ChatWinHeader';
-import ChatWinMain from './ChatWinMain';
+import ChatConversation from './ChatConversation';
+import ChatDialog from './ChatDialog';
+import ChatHeader from './ChatHeader';
 
 @observer // 监听当前组件
 export default class Chat extends React.Component {
@@ -14,9 +14,10 @@ export default class Chat extends React.Component {
         var store = this.props.store;
         return (
             <div className="chat-window">
-                <div className="chat-container">
-                    <ChatWinHeader store={store} />
-                    <ChatWinMain store={store} />
+                <ChatHeader store={store} />
+                <div className="chat-main">
+                    <ChatConversation store={store} />
+                    <ChatDialog store={store} />
                 </div>
             </div>
         );

@@ -4,7 +4,6 @@ import io from 'socket.io-client';
 
 import Login from './Login';
 import Chat from './Chat';
-import * as style from '../styles/app.css';
 
 @inject(["chatStore"]) // 注入对应的store
 @observer // 监听当前组件

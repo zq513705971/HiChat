@@ -1,0 +1,362 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    overflow: hidden;
+    background: #f2f2f2;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*登录窗口*/
+
+.login-window {
+    width: 400px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    .login-form {
+        flex: 1;
+        padding: 50px;
+        background-color: #ccc;
+        border-radius: 15px;
+        .header {
+            font-size: 30px;
+            font-weight: bold;
+            padding: 0 20px 20px 20px;
+        }
+        .input {
+            padding: 0 20px;
+            input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+        .btn {
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            box-sizing: border-box;
+            align-items: center;
+            input {
+                box-sizing: border-box;
+                width: 100%;
+                margin-top: 10px;
+                border: 1px solid #38f;
+                background: #38f;
+                color: #fff;
+                border-radius: 5px;
+                padding: 5px 15px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+/*会话窗口*/
+
+.chat-window {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .chat-header {
+        height: 80px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        font-size: 30px;
+        padding: 0 15px;
+        font-weight: bold;
+        background: #38c;
+        color: #fff;
+    }
+    .chat-main {
+        background: green;
+        flex: 1;
+        display: flex;
+        .contacts {
+            width: 220px;
+            background: red;
+            display: flex;
+            flex-direction: column;
+            .header {
+                height: 40px;
+                background: #ebebeb;
+                width: 100%;
+                border-bottom: 1px solid #ccc;
+                display: flex;
+                align-items: center;
+                padding: 0 5px;
+                font-weight: bold;
+                color: #333;
+                box-sizing: border-box;
+            }
+            .list {
+                flex: 1;
+                width: 100%;
+                background: #fff;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                .none {
+                    height: 24px;
+                    padding: 5px;
+                    font-size: 14px;
+                }
+                .PRIVATE {
+                    border-right: 5px solid #38c;
+                }
+                .GROUP {
+                    border-right: 5px solid rgb(247, 118, 12);
+                }
+                .item {
+                    height: 60px;
+                    cursor: pointer;
+                    display: flex;
+                    border-bottom: 1px solid #ebebeb;
+                    box-sizing: border-box;
+                    .image {
+                        width: 60px;
+                        height: 60px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 5px;
+                        box-sizing: border-box;
+                        .circle {
+                            height: 40px;
+                            width: 40px;
+                            border-radius: 5px;
+                            .icon {
+                                width: 100%;
+                                height: 100%;
+                                border-radius: 50px;
+                            }
+                        }
+                    }
+                    .info {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        .name {
+                            height: 30px;
+                            width: 100%;
+                            display: flex;
+                            align-items: flex-end;
+                        }
+                        .recent {
+                            height: 30px;
+                            width: 100%;
+                            font-size: 12px;
+                            color: #808080;
+                            line-height: 24px;
+                            word-break: break-all;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap !important;
+                            max-width: 120px;
+                        }
+                    }
+                }
+                .item:hover {
+                    background: #ccc;
+                }
+            }
+        }
+        .dialog {
+            background: #f2f2f2;
+            flex: 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .none {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #808080;
+                font-size: 36px;
+                font-weight: bold;
+            }
+            .win {
+                background: #808080;
+                position: absolute;
+                top: 80px;
+                left: 220px;
+                right: 0;
+                bottom: 0;
+                .header {
+                    width: 100%;
+                    height: 40px;
+                    border-bottom: 1px solid #38f;
+                    box-sizing: border-box;
+                    background: #39f;
+                    display: flex;
+                    align-items: center;
+                    color: #fff;
+                    padding: 0 15px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+                .messages {
+                    position: absolute;
+                    top: 40px;
+                    bottom: 156px;
+                    left: 0;
+                    right: 0;
+                    background: #ebebeb;
+                    padding: 5px;
+                    box-sizing: border-box;
+                    .scroll {
+                        overflow-x: hidden;
+                        overflow-y: auto;
+                        height: 100%;
+                        width: 100%;
+                        background: #fff;
+                    }
+                    .list {
+                        background: #fff;
+                        overflow-x: hidden;
+                        overflow-y: auto;
+                        .none {
+                            margin-top: 15px;
+                            font-size: 12px;
+                        }
+                        .msg {
+                            width: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            padding: 5px;
+                            box-sizing: border-box;
+                            .time {
+                                height: 16px;
+                                font-size: 12px;
+                                color: #808080;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                            }
+                            .line {
+                                display: flex;
+                                .block {
+                                    max-width: 60%;
+                                    display: flex;
+                                    .image {
+                                        width: 48px;
+                                        height: 48px;
+                                        .icon {
+                                            width: 100%;
+                                            height: 100%;
+                                            border-radius: 50px;
+                                        }
+                                    }
+                                    .msg-content {
+                                        flex: 1;
+                                        height: 100%;
+                                        flex-direction: column;
+                                        padding: 0 5px;
+                                        box-sizing: border-box;
+                                        .name {
+                                            display: flex;
+                                            height: 20px;
+                                            color: #808080;
+                                        }
+                                        .info {
+                                            border-radius: 5px;
+                                            padding: 5px 8px;
+                                            margin-top: 5px;
+                                            box-sizing: border-box;
+                                            font-size: 14px;
+                                            line-height: 20px;
+                                        }
+                                    }
+                                }
+                            }
+                            .receive {
+                                flex-direction: row;
+                                .block {
+                                    flex-direction: row;
+                                    .name {
+                                        justify-content: flex-start;
+                                    }
+                                    .info {
+                                        border: 1px solid #ebebeb;
+                                        background: #ebebeb;
+                                    }
+                                }
+                            }
+                            .send {
+                                flex-direction: row-reverse;
+                                .block {
+                                    flex-direction: row-reverse;
+                                    .name {
+                                        justify-content: flex-end;
+                                    }
+                                    .info {
+                                        border: 1px solid #38f;
+                                        background: #38f;
+                                        color: #fff;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .control {
+                    height: 36px;
+                    width: 100%;
+                    position: absolute;
+                    bottom: 120px;
+                    background: #ccc;
+                }
+                .input {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 120px;
+                    background: #ebebeb;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 5px;
+                    box-sizing: border-box;
+                    textarea {
+                        border: #ccc;
+                        flex: 1;
+                        width: 100%;
+                    }
+                    .btn {
+                        height: 40px;
+                        padding: 5px 15px;
+                        box-sizing: border-box;
+                        display: flex;
+                        justify-content: flex-end;
+                        input {
+                            background: #39f;
+                            padding: 5px 10px;
+                            color: #fff;
+                            border: 1px solid #38f;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        }
+                        input:hover {
+                            background: #38f;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
