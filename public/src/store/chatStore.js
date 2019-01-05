@@ -9,6 +9,7 @@ class ChatStore {
     @observable logined = false;
     @observable token = '';
     @observable image = undefined;
+    @observable name = undefined;
     @observable conversations = [];
 
     @observable isTyping = false;
@@ -132,6 +133,7 @@ class ChatStore {
                 self.logined = !!data.token;
                 self.token = data.token;
                 self.image = data.image;
+                self.name = data.targetName;
                 self.conversations = self.conversations.concat(data.conversations);
                 console.log(data);
             }

@@ -10,7 +10,7 @@ export default class ChatHeader extends React.Component {
 
     render() {
         var { store } = this.props;
-        var { image, userId } = store;
+        var { image, name } = store;
         return (
             <div className="chat-header">
                 <div className="logo">
@@ -18,7 +18,7 @@ export default class ChatHeader extends React.Component {
                 </div>
                 <div className="nav">
                     <div className="login-user">
-                        <div className="name">{userId}</div>
+                        <div className="name">{name}</div>
                         <img src={image || require("../images/temp.png")} className="icon" />
                     </div>
                 </div>

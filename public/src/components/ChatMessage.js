@@ -10,24 +10,18 @@ export default class ChatMessage extends React.Component {
 
     render() {
         var { message, store } = this.props;
-        var { selectedTarget, image } = store;
-
-        var messageImage = undefined;
-        if (message.direction == "send")
-            messageImage = image;
-        else
-            messageImage = selectedTarget.image;
+        var { sender } = message;
         return (
             <div className="msg">
                 <div className="time">{new Date(message.time).toLocaleString()}</div>
                 <div className={["line", message.direction].join(' ')}>
                     <div className="block">
                         <div className="image">
-                            <img src={messageImage || require("../images/temp.png")} className="icon" />
+                            <img src={sender.image || require("../images/temp.png")} className="icon" />
                         </div>
                         <div className="msg-content">
                             <div className="name">
-                                {message.from}
+                                {sender.targetName}
                             </div>
                             <div className="info">
                                 {message.content}

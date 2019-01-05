@@ -332,7 +332,7 @@ ChatServer.prototype._sendMsg = function (socket, data) {
             userIds.push(userInfo.userId);
         }
         var sockets = this._getSockets(userIds);
-        data = { ...data, time: new Date().getTime(), from: userId, messageId: Utils.guid() };
+        data = { ...data, time: new Date().getTime(), from: userId, sender: self._getUserInfo(userId), messageId: Utils.guid() };
 
         self._saveHistoryMessage(data);
         self._send(sockets, data);
@@ -346,9 +346,9 @@ ChatServer.prototype._send = function (sockets, data) {
     //Text,Image,File,TypingStatusMessage
     //var messageType = data.messageType;
     //var content = data.content;
-    console.log("data", data);
+    //console.log("data", data);
     if (sockets) {
-        console.log(sockets.length)
+        //console.log(sockets.length)
         sockets.forEach(socket => {
             socket.emit("receivedMsg", data);
         });
