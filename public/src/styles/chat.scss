@@ -86,7 +86,101 @@ body {
                 padding: 5px 15px;
                 cursor: pointer;
             }
+            input:hover {
+                background: #39f;
+            }
         }
+        .other {
+            padding: 10px 20px;
+            display: flex;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: flex-end;
+            .register,
+            .forget {
+                font-size: 12px;
+                color: #38c;
+                cursor: pointer;
+                padding: 2px 5px;
+                box-sizing: border-box;
+            }
+            .register:hover,
+            .forget:hover {
+                color: #39f;
+            }
+        }
+    }
+    .register-form {
+        flex: 1;
+        background-color: #ccc;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        .header {
+            height: 60px;
+            display: flex;
+            width: 100%;
+            font-size: 32px;
+            .title {
+                flex: 1;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                padding: 15px;
+            }
+            .close {
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                font-size: 18px;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                font-weight: bold;
+            }
+            .close:hover {
+                font-size: 20px;
+                color: red;
+            }
+        }
+        .block {
+            padding: 20px 50px 50px 50px;
+            .input {
+                padding: 0 20px;
+                input {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            }
+            .btn {
+                padding: 0 20px;
+                display: flex;
+                justify-content: center;
+                box-sizing: border-box;
+                align-items: center;
+                input {
+                    box-sizing: border-box;
+                    width: 100%;
+                    margin-top: 10px;
+                    border: 1px solid #38f;
+                    background: #38f;
+                    color: #fff;
+                    border-radius: 5px;
+                    padding: 5px 15px;
+                    cursor: pointer;
+                }
+                input:hover {
+                    background: #39f;
+                }
+            }
+        }
+    }
+    .forget-form {
+        flex: 1;
+        background-color: #ccc;
+        border-radius: 15px;
     }
 }
 
