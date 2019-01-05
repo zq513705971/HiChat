@@ -14,13 +14,13 @@ export default class ConversationItem extends React.Component {
     }
 
     render() {
-        var { item } = this.props;
+        var { item, store } = this.props;
         //console.log(item);
         return (
             <div className={["item", item.conversationType].join(' ')} onClick={this._onClick}>
                 <div className="image">
                     <div className="circle">
-                        <img src={require("../images/temp.png")} className="icon" />
+                        <img src={item.image || require("../images/temp.png")} className="icon" />
                     </div>
                 </div>
                 <div className="info">

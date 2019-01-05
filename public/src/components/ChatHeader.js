@@ -9,9 +9,19 @@ export default class ChatHeader extends React.Component {
     }
 
     render() {
+        var { store } = this.props;
+        var { image, userId } = store;
         return (
             <div className="chat-header">
-                HiChat! :)
+                <div className="logo">
+                    HiChat! :)
+                </div>
+                <div className="nav">
+                    <div className="login-user">
+                        <div className="name">{userId}</div>
+                        <img src={image || require("../images/temp.png")} className="icon" />
+                    </div>
+                </div>
             </div>
         );
     }

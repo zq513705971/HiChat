@@ -122,7 +122,7 @@ ChatServer.prototype._getUserInfo = function (userId) {
     var userInfo = undefined;
     if (self.userInfos.has(userId)) {
         userInfo = self.userInfos.get(userId);
-        return { targetId: userId, targetName: userInfo.name };
+        return { targetId: userId, targetName: userInfo.name, image: userInfo.image };
     }
     return {};
 }

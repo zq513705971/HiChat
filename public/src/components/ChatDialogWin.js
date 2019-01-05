@@ -55,10 +55,17 @@ export default class ChatDialogWin extends React.Component {
 
     render() {
         var { target, store } = this.props;
+        var { isTyping } = store;
         return (
             <div className="win">
                 <div className="header">
-                    :) {target.targetName}
+                    <img src={target.image || require("../images/temp.png")} className="icon" />
+                    <div className="name">
+                        :) {target.targetName}
+                        <div className="typing">{
+                            isTyping ? "正在输入..." : ""
+                        }</div>
+                    </div>
                 </div>
                 <div className="messages">
                     <ChatMessages store={store} />

@@ -8,8 +8,10 @@ class ChatStore {
     @observable connected = false;
     @observable logined = false;
     @observable token = '';
+    @observable image = undefined;
     @observable conversations = [];
 
+    @observable isTyping = false;
     @observable socket = undefined;
     @observable selectedTarget = undefined;
     constructor() {
@@ -36,7 +38,14 @@ class ChatStore {
 
     _onTyping = (data) => {
         var self = this;
-        //console.log(data);
+        //console.log(self.selectedTarget, data);
+
+        self.isTyping = self.selectedTarget && data.from && data.from.targetId == self.selectedTarget.targetId;
+        if (self.isTyping) {
+            setTimeout(() => {
+                self.isTyping = false;
+            }, 2000);
+        }
     }
 
     _getConversationTarget = (conversationType, targetId) => {
@@ -122,6 +131,7 @@ class ChatStore {
                 var data = result.msg;
                 self.logined = !!data.token;
                 self.token = data.token;
+                self.image = data.image;
                 self.conversations = self.conversations.concat(data.conversations);
                 console.log(data);
             }
