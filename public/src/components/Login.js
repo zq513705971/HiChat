@@ -10,6 +10,21 @@ export default class Login extends React.Component {
         };
     }
 
+    _handleEnterKey = (e) => {
+        if (e.keyCode === 13) {
+            var { store } = this.state;
+            store.login();
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener("keydown", this._handleEnterKey);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this._handleEnterKey);
+    }
+
     render() {
         var { store } = this.state;
         var { userId, password } = store;

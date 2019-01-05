@@ -22,13 +22,14 @@ class ChatStore {
         var socket = self.socket;
         console.log(socket);
         socket.on('connect', function () {
-            console.log('connected to server++++++++++++++++');
+            console.log('已链接到服务...');
             self.connected = true;
         });
         socket.on("receivedMsg", self._receivedMsg);
         socket.on("newSignIn", self._newSignIn);
         socket.on("onTyping", self._onTyping);
         socket.on("disconnect", () => {
+            console.log("与服务器间的链接已断开...");
             self.connected = false;
         });
     }
@@ -63,7 +64,7 @@ class ChatStore {
     }
 
     _receivedMsg = (data) => {
-        console.log("_receivedMsg", data);
+        //console.log("_receivedMsg", data);
 
         var self = this;
         if (self.connected && self.logined) {
@@ -135,7 +136,15 @@ class ChatStore {
         if (!self.selectedTarget)
             return [];
         var target = self._getConversationTarget(self.selectedTarget.conversationType, self.selectedTarget.targetId);
-        return target && target.historys;
+        if (target && target.historys) {
+            var historys = [];
+            target.historys.forEach(history => {
+                //console.log(history);
+                historys.push({ ...history, direction: history.from == self.userId ? "send" : "receive" });
+            });
+            return historys;
+        }
+        return [];
     }
 }
 

@@ -13,6 +13,20 @@ export default class ChatDialogWin extends React.Component {
         };
     }
 
+    _handleEnterKey = (e) => {
+        if (e.ctrlKey && e.keyCode === 13) {
+            this._sendMessage();
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener("keydown", this._handleEnterKey);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this._handleEnterKey);
+    }
+
     _sendMessage = () => {
         var { target, store } = this.props;
         var { content } = this.state;

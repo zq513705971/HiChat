@@ -20,13 +20,11 @@ function ChatServer(io, appKey, initData) {
                 token: Utils.guid(),
                 sockets: []
             });
-            this.history.set("PRIVATE-" + user.userId, []);
         });
         (initData.groups || []).forEach(group => {
             this.groupInfos.set(group.groupId, {
                 ...group
             });
-            this.history.set("GROUP-" + group.groupId, []);
         });
     }
 }
@@ -103,7 +101,8 @@ ChatServer.prototype._getConversations = function (userId) {
         conversations.push({
             ...self._getUserInfo(friend),
             conversationType: conversationType,
-            recent: self._getTargetRecentMessage(conversationType, friend)
+            historys: this._getHistoryMessages(conversationType, userId, friend),
+            recent: self._getTargetRecentMessage(conversationType, userId, friend)
         });
     });
     (groups || []).forEach(group => {
@@ -111,7 +110,8 @@ ChatServer.prototype._getConversations = function (userId) {
         conversations.push({
             ...self._getGroupInfo(group),
             conversationType: conversationType,
-            recent: self._getTargetRecentMessage(conversationType, group)
+            historys: this._getHistoryMessages(conversationType, userId, group),
+            recent: self._getTargetRecentMessage(conversationType, userId, group)
         });
     });
     return conversations;
@@ -277,22 +277,42 @@ ChatServer.prototype._saveHistoryMessage = function (data) {
     //PRIVATE-私聊，GROUP-群组
     var conversationType = data.conversationType;
 
-    var key = conversationType + '-' + targetId;
+    var key = undefined;
+    switch (conversationType) {
+        case "GROUP":
+            key = conversationType + '-' + targetId;
+            break;
+        case "PRIVATE": {
+            key = conversationType + '-' + [data.from, data.targetId].sort().join("-");
+        }
+            break;
+    }
+    if (!self.history.has(key))
+        self.history.set(key, []);
+
     var history = self.history.get(key);
-    //将最新消息放在首位置
-    history.unshift(data);
+    history.push(data);
 }
 
-ChatServer.prototype._getTargetRecentMessage = function (conversationType, targetId) {
-    var historys = this._getHistoryMessages(conversationType, targetId);
+ChatServer.prototype._getTargetRecentMessage = function (conversationType, userId, targetId) {
+    var historys = this._getHistoryMessages(conversationType, userId, targetId);
     if (historys && historys.length >= 1)
-        return historys[0];
+        return historys[historys.length - 1];
     return undefined;
 }
 
-ChatServer.prototype._getHistoryMessages = function (conversationType, targetId) {
+ChatServer.prototype._getHistoryMessages = function (conversationType, userId, targetId) {
     var self = this;
-    var key = conversationType + '-' + targetId;
+    var key = undefined;
+    switch (conversationType) {
+        case "GROUP":
+            key = conversationType + '-' + targetId;
+            break;
+        case "PRIVATE": {
+            key = conversationType + '-' + [userId, targetId].sort().join("-");
+        }
+            break;
+    }
     return self.history.get(key);
 }
 
