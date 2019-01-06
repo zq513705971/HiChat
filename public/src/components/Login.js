@@ -43,7 +43,7 @@ export default class Login extends React.Component {
 
     render() {
         var { store, register, forget } = this.state;
-        var { userId, password } = store;
+        var { loginedUser } = store;
         return (
             <div className="login-window">
                 {
@@ -51,16 +51,16 @@ export default class Login extends React.Component {
                         <div className="login-form">
                             <div className="header">HiChat! :)</div>
                             <div className="input">
-                                <input type="text" value={userId} placeholder="请输入用户名"
+                                <input type="text" value={loginedUser.userId || ''} placeholder="请输入用户名"
                                     onChange={(e) => {
-                                        store.userId = e.target.value;
+                                        loginedUser.userId = e.target.value;
                                     }}
                                 />
                             </div>
                             <div className="input">
-                                <input type="password" value={password} placeholder="请输入密码"
+                                <input type="password" value={loginedUser.password || ''} placeholder="请输入密码"
                                     onChange={(e) => {
-                                        store.password = e.target.value;
+                                        loginedUser.password = e.target.value;
                                     }}
                                 />
                             </div>

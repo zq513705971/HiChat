@@ -2,6 +2,7 @@ import React from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from "mobx-react";
 import ChatMessage from './ChatMessage';
+import Utils from '../utils/Utils';
 
 @observer // 监听当前组件
 export default class ChatMessages extends React.Component {
@@ -32,7 +33,8 @@ export default class ChatMessages extends React.Component {
                     {
                         historys && historys.length > 0 ?
                             historys.map((history) => {
-                                return <ChatMessage store={store} key={history.messageId} message={history} />
+                                var key = Utils.random(5);
+                                return <ChatMessage store={store} key={history.messageId + "-" + key} message={history} />
                             })
                             : <div className="none">
                                 开始畅聊吧~~~

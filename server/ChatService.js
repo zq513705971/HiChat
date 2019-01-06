@@ -1,4 +1,4 @@
-let Utils = require('./Utils');
+let Utils = require('../public/src/utils/Utils');
 let ChatServer = require('./ChatServer');
 let ChatData = require('./ChatData');
 

@@ -36,15 +36,15 @@ export default class ChatConversation extends React.Component {
 
     render() {
         var { store } = this.props;
-        var { conversations } = store;
-        //console.log(conversations)
+        var { conversationsSorted } = store;
+        //console.log(toJS(conversationsSorted))
         return (
             <div className="contacts">
                 <div className="header">
                     会话列表
                 </div>
                 {
-                    this._renderItems(conversations)
+                    this._renderItems(conversationsSorted)
                 }
             </div>
         );

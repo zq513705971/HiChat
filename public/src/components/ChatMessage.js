@@ -1,6 +1,7 @@
 import React from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from "mobx-react";
+import Utils from '../utils/Utils';
 
 @observer // 监听当前组件
 export default class ChatMessage extends React.Component {
@@ -11,6 +12,7 @@ export default class ChatMessage extends React.Component {
     render() {
         var { message, store } = this.props;
         var { sender } = message;
+        console.log(message.content)
         return (
             <div className="msg">
                 <div className="time">{new Date(message.time).toLocaleString()}</div>
@@ -23,8 +25,7 @@ export default class ChatMessage extends React.Component {
                             <div className="name">
                                 {sender.targetName}
                             </div>
-                            <div className="info">
-                                {message.content}
+                            <div className="info" dangerouslySetInnerHTML={{ __html: Utils.htmlEncode(message.content) }}>
                             </div>
                         </div>
                     </div>

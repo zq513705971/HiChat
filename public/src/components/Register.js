@@ -10,7 +10,7 @@ export default class Register extends React.Component {
 
     render() {
         var { store } = this.props;
-        var { image, name } = store;
+        var { loginedUser } = store;
         return (
             <div className="register-form">
                 <div className="header">

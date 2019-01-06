@@ -1,4 +1,4 @@
-let Utils = require('./Utils');
+let Utils = require('../public/src/utils/Utils');
 let ResultMessage = require("./ResultMessage");
 
 function ChatServer(io, appKey, initData) {
