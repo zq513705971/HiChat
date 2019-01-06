@@ -150,7 +150,9 @@ let ChatData = {
             var groupObj = appInfo.members.find(group => {
                 return group.groupId == groupId;
             })
-            return groupObj && groupObj.list || [];
+
+            var userIds = groupObj && groupObj.list || [];
+            return userIds;
         }
         return [];
     },

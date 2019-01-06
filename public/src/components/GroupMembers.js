@@ -8,7 +8,7 @@ export default class GroupMembers extends React.Component {
         super(props);
 
         this.state = {
-            memebers: []
+            members: []
         };
     }
 
@@ -17,18 +17,40 @@ export default class GroupMembers extends React.Component {
         store.getMembers(target.targetId, (list) => {
             console.log(list)
             this.setState({
-                memebers: list
+                members: list
             });
         });
     }
 
     render() {
         var { store, target } = this.props;
+        var { members } = this.state;
+        var { loginedUser } = store;
         return (
             <div className="group-members">
                 <div className="header">群组成员</div>
                 <div className="block">
-                    <div className="list"></div>
+                    <div className="list">
+                        {
+                            members && members.map((member) => {
+                                return (
+                                    <div className="group-member" key={target.targetId + "-" + member.targetId}>
+                                        <div className="name">
+                                            {member.targetName}
+                                        </div>
+                                        <div className="flag">
+                                            {
+                                                member.targetId !== loginedUser.userId
+                                                    ?
+                                                    <div className="circle">+</div> :
+                                                    undefined
+                                            }
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
                 </div>
             </div>
         );

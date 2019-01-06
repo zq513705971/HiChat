@@ -72,21 +72,11 @@ export default class ChatDialogWin extends React.Component {
                     </div>
                     {
                         target.conversationType == "GROUP" ?
-                            <div className="member"
+                            <div className="member" title="群组成员"
                                 onClick={() => {
                                     this.setState({
                                         showMembers: !this.state.showMembers
                                     });
-                                }}
-                                onMouseOver={() => {
-                                    this.setState({
-                                        showMembers: true
-                                    });
-                                }}
-                                onMouseOut={() => {
-                                    // this.setState({
-                                    //     showMembers: false
-                                    // });
                                 }}
                             >
                                 <img src={require("../images/members.png")} className="icon" />
@@ -104,7 +94,7 @@ export default class ChatDialogWin extends React.Component {
                 <div className="input">
                     <textarea ref={"input"} placeholder="在此处输入消息..." onChange={this._inputChange} value={this.state.content}></textarea>
                     <div className="btn">
-                        <input onClick={this._sendMessage} type="button" value="发送消息" />
+                        <input title="Ctrl+回车 发送消息" onClick={this._sendMessage} type="button" value="发送消息" />
                     </div>
                 </div>
             </div>

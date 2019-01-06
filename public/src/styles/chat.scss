@@ -465,27 +465,69 @@ body {
                         .header {
                             height: 26px;
                             width: 100%;
-                            background: #f2f2f2;
+                            background: #37f;
                             display: flex;
                             align-items: center;
                             justify-content: flex-start;
-                            color: #333;
+                            color: #f2f2f2;
                             font-weight: initial;
                             font-size: 16px;
                             border: none;
+                            cursor: default;
                         }
                         .block {
                             width: 100%;
                             flex: 1;
-                            padding: 1px 5px 5px 5px;
+                            padding: 2px;
                             display: flex;
                             align-items: center;
                             justify-content: center;
                             box-sizing: border-box;
+                            background: #f2f2f2;
                             .list {
                                 height: 100%;
                                 width: 100%;
                                 background: #fff;
+                                .group-member {
+                                    display: flex;
+                                    flex-direction: row;
+                                    cursor: pointer;
+                                    .name {
+                                        height: 24px;
+                                        width: 100%;
+                                        color: #333;
+                                        display: flex;
+                                        align-items: center;
+                                        box-sizing: border-box;
+                                        padding: 0 5px;
+                                        font-size: 14px;
+                                    }
+                                    .flag {
+                                        width: 24px;
+                                        height: 24px; //background: red;
+                                        display: flex;
+                                        box-sizing: border-box;
+                                        align-items: center;
+                                        justify-content: center;
+                                        .circle {
+                                            border: 1px solid #38f;
+                                            color: #38f;
+                                            height: 12px;
+                                            width: 12px;
+                                            border-radius: 12px;
+                                            font-size: 12px;
+                                            display: flex;
+                                            align-items: flex-end;
+                                            justify-content: center;
+                                        }
+                                        .circle:hover {
+                                            color: #39f;
+                                        }
+                                    }
+                                }
+                                .group-member:hover {
+                                    background: #f2f2f2;
+                                }
                             }
                         }
                     }

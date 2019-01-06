@@ -31,7 +31,7 @@ export default class ChatHeader extends React.Component {
                 <div className="nav">
                     <div className="login-user">
                         <div className="name">{loginedUser.name}</div>
-                        <img onClick={this._setting} src={loginedUser.image || require("../images/temp.png")} className="icon" />
+                        <img title="点击进入设置" onClick={this._setting} src={loginedUser.image || require("../images/temp.png")} className="icon" />
                     </div>
                 </div>
                 {
