@@ -133,6 +133,18 @@ class ChatStore {
     }
 
     @action
+    getMembers = (groupId, callback) => {
+        var self = this;
+        self.socket.emit('groupMembers', { groupId }, function (result) {
+            if (result.code == 0) {
+                callback && callback(result.msg);
+            }
+            else
+                alert(result.msg);
+        });
+    }
+
+    @action
     login = () => {
         var self = this;
         self.logined = false;
@@ -163,6 +175,19 @@ class ChatStore {
         self.loginedUser.password = undefined;
         self.selectedTarget = undefined;
         self._reconnection();
+    }
+
+    @action
+    register = (userId, name, password, callback) => {
+        var self = this;
+        self.socket.emit('user/signUp', { userId: userId, name: name, password: password }, function (result) {
+            if (result.code == 0) {
+                var data = result.msg;
+                console.log(data);
+                callback && callback();
+            }
+            alert(result.msg);
+        });
     }
 
     @computed

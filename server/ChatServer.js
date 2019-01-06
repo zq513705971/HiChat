@@ -1,32 +1,23 @@
 let Utils = require('../public/src/utils/Utils');
 let ResultMessage = require("./ResultMessage");
+let ChatData = require('./ChatData');
 
-function ChatServer(io, appKey, initData) {
+function ChatServer(io, appKey) {
     this.io = io;
     this.appKey = appKey;
     //key ->userId,value->用户信息，用户已连接sockets
     this.userInfos = new Map();
-    //key ->groupId,value->群组名称、成员列表
-    this.groupInfos = new Map();
     //sockets->用于移除断开连接的用户socket
     this.sockets = new Map();
-    //用于存储发送的消息，私聊为Private-UserId，群聊-GroupId
-    this.history = new Map();
-    if (initData) {
-        //初始化存储结构
-        (initData.users || []).forEach(user => {
-            this.userInfos.set(user.userId, {
-                ...user,
-                token: Utils.guid(),
-                sockets: []
-            });
+
+    var users = ChatData.getUsers(this.appKey);
+    //初始化存储结构
+    (users || []).forEach(user => {
+        this.userInfos.set(user.userId, {
+            token: Utils.guid(),
+            sockets: []
         });
-        (initData.groups || []).forEach(group => {
-            this.groupInfos.set(group.groupId, {
-                ...group
-            });
-        });
-    }
+    });
 }
 
 /**
@@ -44,6 +35,9 @@ ChatServer.prototype.init = function () {
         socket.on("user/signUp", (user, callback) => {
             self._signUp(user, callback);
         });
+        socket.on("groupMembers", (group, callback) => {
+            self._getGroupMembers(group, callback);
+        });
         socket.on("sendMsg", (data) => {
             self._sendMsg(socket, data);
         });
@@ -54,37 +48,29 @@ ChatServer.prototype.init = function () {
     });
 }
 
+ChatServer.prototype._getGroupMembers = function (group, callback) {
+    var self = this;
+    var userIds = ChatData.getGroupMembers(self.appKey, group.groupId);
+    var userInfos = [];
+    if (userIds) {
+        userIds.forEach(userId => {
+            userInfos.push({
+                ...ChatData.getUserInfo(self.appKey, userId)
+            });
+        });
+    }
+    callback && callback(new ResultMessage().ok(userInfos));
+}
+
 ChatServer.prototype._typing = function (socket, data) {
     var self = this;
     var userIds = self._getTargetIds(data.conversationType, data.targetId);
     var sockets = self._getSockets(userIds);
     var userId = self.sockets.get(socket);
-    userInfo = self.userInfos.get(userId);
-
-    var info = { ...data, from: self._getUserInfo(userId) };
+    var info = { ...data, from: ChatData.getUserInfo(self.appKey, userId) };
     sockets && sockets.forEach(_socket => {
         _socket.emit("onTyping", info);
     });
-}
-
-/**
- * 获取好友列表
- */
-ChatServer.prototype._getFriends = function (userId) {
-    var self = this;
-    var userInfo = self.userInfos.get(userId);
-    return userInfo.friends;
-}
-
-ChatServer.prototype._getUserGroups = function (userId) {
-    var self = this;
-    var groupIds = [];
-    self.groupInfos.forEach((groupInfo, groupId) => {
-        var members = groupInfo.members || [];
-        if (members.indexOf(userId) >= 0)
-            groupIds.push(groupId);
-    });
-    return groupIds;
 }
 
 /**
@@ -92,14 +78,14 @@ ChatServer.prototype._getUserGroups = function (userId) {
  */
 ChatServer.prototype._getConversations = function (userId) {
     var self = this;
-    var friends = self._getFriends(userId);
-    var groups = self._getUserGroups(userId);
+    var friends = ChatData.getFriends(self.appKey, userId);
+    var groups = ChatData.getUserGroups(self.appKey, userId);
 
     var conversations = [];
     (friends || []).forEach(friend => {
         var conversationType = "PRIVATE";
         conversations.push({
-            ...self._getUserInfo(friend),
+            ...ChatData.getUserInfo(self.appKey, friend),
             conversationType: conversationType,
             historys: this._getHistoryMessages(conversationType, userId, friend),
             recent: self._getTargetRecentMessage(conversationType, userId, friend)
@@ -108,7 +94,7 @@ ChatServer.prototype._getConversations = function (userId) {
     (groups || []).forEach(group => {
         var conversationType = "GROUP";
         conversations.push({
-            ...self._getGroupInfo(group),
+            ...ChatData.getGroupInfo(self.appKey, group),
             conversationType: conversationType,
             historys: this._getHistoryMessages(conversationType, userId, group),
             recent: self._getTargetRecentMessage(conversationType, userId, group)
@@ -117,50 +103,22 @@ ChatServer.prototype._getConversations = function (userId) {
     return conversations;
 }
 
-ChatServer.prototype._getUserInfo = function (userId) {
-    var self = this;
-    var userInfo = undefined;
-    if (self.userInfos.has(userId)) {
-        userInfo = self.userInfos.get(userId);
-        return { targetId: userId, targetName: userInfo.name, image: userInfo.image };
-    }
-    return {};
-}
-
-
-ChatServer.prototype._getGroupInfo = function (groupId) {
-    var self = this;
-    var groupInfo = undefined;
-    if (self.groupInfos.has(groupId)) {
-        groupInfo = self.groupInfos.get(groupId);
-        return { targetId: groupId, targetName: groupInfo.name };
-    }
-    return {};
-}
-
 /**
  * 用户登录
  */
 ChatServer.prototype._signIn = function (socket, user, callback) {
     var self = this;
-    var userInfo = undefined;
-    //console.log(user, self.userInfos);
-    if (self.userInfos.has(user.userId))
-        userInfo = self.userInfos.get(user.userId);
-    else {
-        callback && callback(new ResultMessage().error("该用户不存在！"));
+    //console.log(user);
+    if (!ChatData.checkUser(user.userId, user.password, (msg) => {
+        callback && callback(new ResultMessage().error(msg));
         return;
-    }
-    if (userInfo.userId == user.userId && userInfo.password == user.password) {
+    })) {
+        var userInfo = self.userInfos.get(user.userId);
         userInfo.sockets.push(socket);
-        self.sockets.set(socket, userInfo.userId);
-
-        var conversations = self._getConversations(userInfo.userId);
-        callback && callback(new ResultMessage().ok({ ...self._getUserInfo(userInfo.userId), token: userInfo.token, conversations }));
-        self._newSignInNotification(userInfo.userId);
-    } else {
-        callback && callback(new ResultMessage().error("请确认密码是否正确！"));
-        return;
+        self.sockets.set(socket, user.userId);
+        var conversations = self._getConversations(user.userId);
+        callback && callback(new ResultMessage().ok({ ...ChatData.getUserInfo(self.appKey, user.userId), token: userInfo.token, conversations }));
+        self._newSignInNotification(user.userId);
     }
 }
 
@@ -169,10 +127,10 @@ ChatServer.prototype._signIn = function (socket, user, callback) {
  */
 ChatServer.prototype._newSignInNotification = function (userId) {
     var self = this;
-    var friendUserIds = self._getFriends(userId);
+    var friendUserIds = ChatData.getFriends(self.appKey, userId);
     var sockets = self._getSockets(friendUserIds);
     sockets.forEach(socket => {
-        socket.emit("newSignIn", self._getUserInfo(userId));
+        socket.emit("newSignIn", ChatData.getUserInfo(self.appKey, userId));
     });
 }
 
@@ -181,15 +139,18 @@ ChatServer.prototype._newSignInNotification = function (userId) {
  */
 ChatServer.prototype._signUp = function (user, callback) {
     var self = this;
-    if (self.userInfos.has(user.userId)) {
+    var userInfo = ChatData.getUserInfo(self.appKey, user.userId);
+    if (userInfo) {
         callback && callback(new ResultMessage().error("已存在该用户，请重新输入！"));
         return;
     }
     this.userInfos.set(user.userId, {
-        ...user,
         token: Utils.guid(),
         sockets: []
     });
+    ChatData.joinUser(self.appKey, user);
+    ChatData.joinAppGroup(self.appKey, user.userId);
+    callback && callback(new ResultMessage().ok("注册成功！"));
 }
 
 /**
@@ -209,18 +170,7 @@ ChatServer.prototype._disconnect = function (socket) {
         sockets.splice(index, 1);
     self.sockets.delete(socket);
 
-    console.log(userInfo.userId + "-disconnect-" + sockets.length);
-}
-
-/**
- * 获取群组成员userId列表
- */
-ChatServer.prototype._getGroupMembers = function (groupId) {
-    var self = this;
-    var groupInfo = self.groupInfos.get(groupId);
-    if (groupInfo && groupInfo.members)
-        return groupInfo.members;
-    return [];
+    console.log(userId + "-disconnect-" + sockets.length);
 }
 
 /**
@@ -236,7 +186,7 @@ ChatServer.prototype._getTargetIds = function (conversationType, targetId) {
             targets.push(targetId);
             break;
         case "GROUP":
-            targets = targets.concat(self._getGroupMembers(targetId));
+            targets = targets.concat(ChatData.getGroupMembers(self.appKey, targetId));
             break;
     }
     return targets;
@@ -287,11 +237,7 @@ ChatServer.prototype._saveHistoryMessage = function (data) {
         }
             break;
     }
-    if (!self.history.has(key))
-        self.history.set(key, []);
-
-    var history = self.history.get(key);
-    history.push(data);
+    ChatData.saveHistory(self.appKey, key, data);
 }
 
 ChatServer.prototype._getTargetRecentMessage = function (conversationType, userId, targetId) {
@@ -313,7 +259,7 @@ ChatServer.prototype._getHistoryMessages = function (conversationType, userId, t
         }
             break;
     }
-    return self.history.get(key);
+    return ChatData.getHistorys(self.appKey, key);
 }
 
 ChatServer.prototype._sendMsg = function (socket, data) {
@@ -328,11 +274,11 @@ ChatServer.prototype._sendMsg = function (socket, data) {
 
     if (userInfo) {
         var userIds = this._getTargetIds(conversationType, targetId);
-        if (userIds.indexOf(userInfo.userId) == -1) {
-            userIds.push(userInfo.userId);
+        if (userIds.indexOf(userId) == -1) {
+            userIds.push(userId);
         }
         var sockets = this._getSockets(userIds);
-        data = { ...data, time: new Date().getTime(), from: userId, sender: self._getUserInfo(userId), messageId: Utils.guid() };
+        data = { ...data, time: new Date().getTime(), from: userId, sender: ChatData.getUserInfo(self.appKey, userId), messageId: Utils.guid() };
 
         self._saveHistoryMessage(data);
         self._send(sockets, data);

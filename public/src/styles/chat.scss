@@ -148,10 +148,9 @@ body {
                 flex: 1;
                 height: 100%;
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
                 justify-content: center;
                 font-weight: bold;
-                padding: 15px;
             }
             .close {
                 width: 40px;
@@ -175,6 +174,11 @@ body {
                 input {
                     width: 100%;
                     box-sizing: border-box;
+                    height: 32px;
+                    line-height: 32px;
+                    font-size: 18px;
+                    margin: 2px 0;
+                    padding: 0 5px;
                 }
             }
             .btn {
@@ -388,12 +392,12 @@ body {
                     color: #fff;
                     padding: 0 5px;
                     font-weight: bold;
-                    cursor: pointer;
                     .icon {
                         width: 28px;
                         height: 28px;
                         border: 1px solid #fff;
                         border-radius: 28px;
+                        cursor: pointer;
                     }
                     .name {
                         padding: 0 5px;
@@ -401,11 +405,29 @@ body {
                         height: 100%;
                         display: flex;
                         align-items: center;
+                        cursor: default;
                         .typing {
                             color: #ebebeb;
                             font-size: 8px;
                             padding: 0 10px;
                             margin-top: 5px;
+                        }
+                    }
+                    .member {
+                        width: 28px;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-sizing: border-box;
+                        .icon {
+                            width: 20px;
+                            height: 20px;
+                            cursor: pointer;
+                        }
+                        .icon:hover {
+                            width: 21px;
+                            height: 21px;
                         }
                     }
                 }
@@ -424,6 +446,48 @@ body {
                         height: 100%;
                         width: 100%;
                         background: #fff;
+                    }
+                    .group-members {
+                        background: rgba(0, 0, 0, 0.2);
+                        color: red;
+                        display: flex;
+                        height: 95%;
+                        position: absolute;
+                        top: 6px;
+                        width: 150px;
+                        right: 6px;
+                        border: 1px solid #ebebeb;
+                        border-radius: 5px;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        box-sizing: border-box;
+                        flex-direction: column;
+                        .header {
+                            height: 26px;
+                            width: 100%;
+                            background: #f2f2f2;
+                            display: flex;
+                            align-items: center;
+                            justify-content: flex-start;
+                            color: #333;
+                            font-weight: initial;
+                            font-size: 16px;
+                            border: none;
+                        }
+                        .block {
+                            width: 100%;
+                            flex: 1;
+                            padding: 1px 5px 5px 5px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            box-sizing: border-box;
+                            .list {
+                                height: 100%;
+                                width: 100%;
+                                background: #fff;
+                            }
+                        }
                     }
                     .list {
                         background: #fff;

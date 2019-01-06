@@ -2,6 +2,7 @@ import React from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from "mobx-react";
 import ChatMessages from './ChatMessages';
+import GroupMembers from './GroupMembers';
 
 @observer // 监听当前组件
 export default class ChatDialogWin extends React.Component {
@@ -9,7 +10,8 @@ export default class ChatDialogWin extends React.Component {
         super(props);
 
         this.state = {
-            content: ''
+            content: '',
+            showMembers: false
         };
     }
 
@@ -46,7 +48,7 @@ export default class ChatDialogWin extends React.Component {
     }
 
     _inputChange = (e) => {
-        var { target, store } = this.props;
+        var { store } = this.props;
         this.setState({
             content: e.target.value
         });
@@ -55,7 +57,9 @@ export default class ChatDialogWin extends React.Component {
 
     render() {
         var { target, store } = this.props;
+        var { showMembers } = this.state;
         var { isTyping } = store;
+        //console.log(target.conversationType)
         return (
             <div className="win">
                 <div className="header">
@@ -66,9 +70,35 @@ export default class ChatDialogWin extends React.Component {
                             isTyping ? "正在输入..." : ""
                         }</div>
                     </div>
+                    {
+                        target.conversationType == "GROUP" ?
+                            <div className="member"
+                                onClick={() => {
+                                    this.setState({
+                                        showMembers: !this.state.showMembers
+                                    });
+                                }}
+                                onMouseOver={() => {
+                                    this.setState({
+                                        showMembers: true
+                                    });
+                                }}
+                                onMouseOut={() => {
+                                    // this.setState({
+                                    //     showMembers: false
+                                    // });
+                                }}
+                            >
+                                <img src={require("../images/members.png")} className="icon" />
+                            </div> :
+                            <div></div>
+                    }
                 </div>
                 <div className="messages">
                     <ChatMessages store={store} />
+                    {
+                        showMembers ? <GroupMembers store={store} target={target} /> : undefined
+                    }
                 </div>
                 <div className="control"></div>
                 <div className="input">

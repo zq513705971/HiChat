@@ -12,7 +12,7 @@ export default class ChatMessage extends React.Component {
     render() {
         var { message, store } = this.props;
         var { sender } = message;
-        console.log(message.content)
+        //console.log(message.content)
         return (
             <div className="msg">
                 <div className="time">{new Date(message.time).toLocaleString()}</div>

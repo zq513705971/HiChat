@@ -15,7 +15,8 @@ export default class Login extends React.Component {
     }
 
     _handleEnterKey = (e) => {
-        if (e.keyCode === 13) {
+        var { register, forget } = this.state;
+        if (e.keyCode === 13 && !register && !forget) {
             var { store } = this.state;
             store.login();
         }
