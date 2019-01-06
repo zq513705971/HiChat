@@ -46,6 +46,14 @@ export default class ChatConversation extends React.Component {
                 {
                     this._renderItems(conversationsSorted)
                 }
+                <div className="tools">
+                    <div className="addUser" title="添加好友">
+                        <img src={require("../images/addUser.png")} />
+                    </div>
+                    <div className="group" title="创建群组">
+                        <img src={require("../images/group.png")} />
+                    </div>
+                </div>
             </div>
         );
     }

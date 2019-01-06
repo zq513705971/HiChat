@@ -359,6 +359,33 @@ body {
                     background: #f2f2f2;
                 }
             }
+            .tools {
+                height: 26px;
+                width: 100%;
+                background: #38c;
+                display: flex;
+                align-items: center;
+                flex-direction: row-reverse;
+                padding: 0 5px;
+                box-sizing: border-box;
+                .group,
+                .addUser {
+                    height: 18px;
+                    width: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    img {
+                        width: 16px;
+                        height: 16px;
+                    }
+                    img:hover {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+            }
         }
         .dialog {
             background: #f2f2f2;
@@ -510,18 +537,11 @@ body {
                                         align-items: center;
                                         justify-content: center;
                                         .circle {
-                                            border: 1px solid #38f;
-                                            color: #38f;
-                                            height: 12px;
-                                            width: 12px;
-                                            border-radius: 12px;
-                                            font-size: 12px;
+                                            height: 16px;
+                                            width: 16px;
                                             display: flex;
                                             align-items: flex-end;
                                             justify-content: center;
-                                        }
-                                        .circle:hover {
-                                            color: #39f;
                                         }
                                     }
                                 }

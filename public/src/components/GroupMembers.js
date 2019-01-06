@@ -42,7 +42,8 @@ export default class GroupMembers extends React.Component {
                                             {
                                                 member.targetId !== loginedUser.userId
                                                     ?
-                                                    <div className="circle">+</div> :
+                                                    <img src={require("../images/add.png")} className="circle" />
+                                                    :
                                                     undefined
                                             }
                                         </div>
