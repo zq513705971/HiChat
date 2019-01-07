@@ -4,8 +4,8 @@ import io from 'socket.io-client';
 class ChatStore {
     @observable appKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
     @observable loginedUser = {
-        userId: "test",
-        password: "test",
+        userId: "",
+        password: "",
         name: undefined,
         image: undefined
     };
