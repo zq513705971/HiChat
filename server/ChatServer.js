@@ -23,6 +23,7 @@ function ChatServer(io, appKey) {
         messageType: "TextMessage",
         conversationType: "GROUP",
         from: "admin",
+        time: new Date().getTime(),
         sender: ChatData.getUserInfo(this.appKey, "admin"),
         content: "HiChat！欢迎您！本系统仅供学习、测试使用，不保留任何聊天数据！谢谢！"
     })
