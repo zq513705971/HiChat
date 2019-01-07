@@ -74,6 +74,9 @@ export default class Login extends React.Component {
                                 <div className="register" onClick={this._register}>注册</div>
                                 <div className="forget" onClick={this._forget}>忘记密码</div>
                             </div>
+                            <div className="warning">
+                                本系统为测试学习使用，不保留用户数据！
+                            </div>
                         </div> :
                         register ? <Register store={store} onClose={() => {
                             this.setState({
@@ -86,6 +89,10 @@ export default class Login extends React.Component {
                                 });
                             }} />
                 }
+                <div className="github">
+                    <div className="triangle"></div>
+                    <a className="link" href="https://github.com/zq513705971/HiChat" target="_blank">github</a>
+                </div>
             </div>
         );
     }
