@@ -18,6 +18,14 @@ function ChatServer(io, appKey) {
             sockets: []
         });
     });
+    ChatData.saveHistory(this.appKey, "GROUP-X000001", {
+        targetId: "X000001",
+        messageType: "TextMessage",
+        conversationType: "GROUP",
+        from: "admin",
+        sender: ChatData.getUserInfo(this.appKey, "admin"),
+        content: "HiChat！欢迎您！本系统仅供学习、测试使用，不保留任何聊天数据！谢谢！"
+    })
 }
 
 /**
