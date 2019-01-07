@@ -30,7 +30,7 @@ class ChatStore {
 
     _connect = () => {
         var self = this;
-        self.socket = io.connect('https://chat.smallbyte.cn/' + this.appKey, {});
+        self.socket = io.connect('http://my.smallbyte.cn:3000/' + this.appKey, {});
         var socket = self.socket;
         //console.log(socket);
         socket.on('connect', function () {
