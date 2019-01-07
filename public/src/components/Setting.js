@@ -1,8 +1,5 @@
 import React from 'react';
 import { observer, inject } from "mobx-react";
-import ChatConversation from './ChatConversation';
-import ChatDialog from './ChatDialog';
-import ChatHeader from './ChatHeader';
 import wrapper from './wrapper';
 
 @observer // 监听当前组件

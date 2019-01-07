@@ -2,11 +2,17 @@ import React from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from "mobx-react";
 import ConversationItem from './ConversationItem';
+import ChatSearchFriend from './ChatSearchFriend';
+import ChatAddGroup from './ChatAddGroup';
 
 @observer // 监听当前组件
 export default class ChatConversation extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showAddGroup: false,
+            showSearchFriend: false
+        };
     }
 
     _renderItem = (conversation) => {
@@ -34,8 +40,23 @@ export default class ChatConversation extends React.Component {
         );
     }
 
+    _showToAddGroup = () => {
+        var { store } = this.props;
+        this.setState({
+            showAddGroup: true
+        })
+    }
+
+    _showToAddFriend = () => {
+        var { store } = this.props;
+        this.setState({
+            showSearchFriend: true
+        })
+    }
+
     render() {
         var { store } = this.props;
+        var { showSearchFriend, showAddGroup } = this.state;
         var { conversationsSorted } = store;
         //console.log(toJS(conversationsSorted))
         return (
@@ -47,13 +68,40 @@ export default class ChatConversation extends React.Component {
                     this._renderItems(conversationsSorted)
                 }
                 <div className="tools">
-                    <div className="addUser" title="添加好友">
+                    <div className="addUser" title="添加好友" onClick={this._showToAddFriend}>
                         <img src={require("../images/addUser.png")} />
                     </div>
-                    <div className="group" title="创建群组">
+                    <div className="group" title="创建群组" onClick={this._showToAddGroup}>
                         <img src={require("../images/group.png")} />
                     </div>
                 </div>
+                {
+                    showAddGroup ? <ChatAddGroup store={store} onComplate={(value) => {
+                        store.addGroup(value, () => {
+                            this.setState({
+                                showAddGroup: false
+                            });
+                        })
+                    }} onCancel={() => {
+                        this.setState({
+                            showAddGroup: false
+                        });
+                    }} /> : undefined
+                }
+                {
+                    showSearchFriend ? <ChatSearchFriend store={store} onComplate={(value) => {
+                        store.addFriend(value, () => {
+                            //console.log("ok");
+                            this.setState({
+                                showSearchFriend: false
+                            });
+                        })
+                    }} onCancel={() => {
+                        this.setState({
+                            showSearchFriend: false
+                        });
+                    }} /> : undefined
+                }
             </div>
         );
     }

@@ -38,6 +38,12 @@ ChatServer.prototype.init = function () {
         socket.on("groupMembers", (group, callback) => {
             self._getGroupMembers(group, callback);
         });
+        socket.on("addGroup", (group, callback) => {
+            self._addGroup(socket, group, callback);
+        });
+        socket.on("addFriend", (user, callback) => {
+            self._addFriend(socket, user, callback);
+        });
         socket.on("sendMsg", (data) => {
             self._sendMsg(socket, data);
         });
@@ -46,6 +52,69 @@ ChatServer.prototype.init = function () {
         });
         socket.on("disconnect", () => self._disconnect(socket));
     });
+}
+
+ChatServer.prototype._addFriend = function (socket, user, callback) {
+    var self = this;
+    var userId = self.sockets.get(socket);
+    var friendId = ChatData.getUserIdByName(self.appKey, user.name);
+
+    //console.log("friendId", friendId);
+    if (!friendId) {
+        callback && callback("不存在该用户名的用户！");
+        return;
+    }
+    if (ChatData.isFriend(self.appKey, userId, friendId)) {
+        callback && callback("该用户已经是您的好友！");
+        return;
+    }
+    console.log("user", user);
+    ChatData.addFriend(self.appKey, userId, friendId);
+    ChatData.addFriend(self.appKey, friendId, userId);
+    callback && callback();
+
+    var userInfo = ChatData.getUserInfo(self.appKey, userId);
+    var friendInfo = ChatData.getUserInfo(self.appKey, friendId);
+
+    var conversationType = "PRIVATE";
+    var historys = self._getHistoryMessages(conversationType, userId, friendId);
+    var recent = self._getTargetRecentMessage(conversationType, userId, friendId);
+
+    var conversations = [
+        {
+            ...userInfo,
+            conversationType: conversationType,
+            historys: historys,
+            recent: recent
+        },
+        {
+            ...friendInfo,
+            conversationType: conversationType,
+            historys: historys,
+            recent: recent
+        }
+    ];
+    self._updateConversations([userId, friendId], "add", conversations);
+}
+
+ChatServer.prototype._updateConversations = function (userIds, type, conversations) {
+    var self = this;
+    //console.log("conversations", conversations);
+    var sockets = self._getSockets(userIds);
+    sockets && sockets.forEach(_socket => {
+        _socket.emit("updateConversation", {
+            type,
+            conversations
+        });
+    });
+}
+
+ChatServer.prototype._addGroup = function (socket, group, callback) {
+    var self = this;
+    var userId = self.sockets.get(socket);
+    var groupInfo = ChatData.addGroup(self.appKey, userId, group.name);
+    self._updateConversations([userId], "add", [{ ...groupInfo, conversationType: "GROUP", historys: [], recent: undefined }]);
+    callback && callback();
 }
 
 ChatServer.prototype._getGroupMembers = function (group, callback) {
@@ -80,6 +149,8 @@ ChatServer.prototype._getConversations = function (userId) {
     var self = this;
     var friends = ChatData.getFriends(self.appKey, userId);
     var groups = ChatData.getUserGroups(self.appKey, userId);
+
+    //console.log(groups)
 
     var conversations = [];
     (friends || []).forEach(friend => {

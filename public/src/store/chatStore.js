@@ -4,8 +4,8 @@ import io from 'socket.io-client';
 class ChatStore {
     @observable appKey = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
     @observable loginedUser = {
-        userId: "smallbyte",
-        password: "smallbyte",
+        userId: "test",
+        password: "test",
         name: undefined,
         image: undefined
     };
@@ -40,9 +40,22 @@ class ChatStore {
         socket.on("receivedMsg", self._receivedMsg);
         socket.on("newSignIn", self._newSignIn);
         socket.on("onTyping", self._onTyping);
+        socket.on("updateConversation", self._updateConversation);
         socket.on("disconnect", () => {
             console.log("与服务器间的链接已断开...");
             self.connected = false;
+        });
+    }
+
+    _updateConversation = (obj) => {
+        var self = this;
+        var conversations = obj.conversations;
+        (conversations || []).forEach(conversation => {
+            if (conversation.conversationType == 'PRIVATE' && conversation.targetId == self.loginedUser.userId)
+                return;
+            var target = self._getConversationTarget(conversation.conversationType, conversation.targetId);
+            if (!target)
+                self.conversations.push(conversation);
         });
     }
 
@@ -187,6 +200,23 @@ class ChatStore {
                 callback && callback();
             }
             alert(result.msg);
+        });
+    }
+
+    @action
+    addGroup = (name, callback) => {
+        var self = this;
+        self.socket.emit('addGroup', { name }, callback);
+    }
+
+    @action
+    addFriend = (name, callback) => {
+        var self = this;
+        self.socket.emit('addFriend', { name }, function (msg) {
+            if (msg)
+                alert(msg);
+            else
+                callback && callback();
         });
     }
 

@@ -15,7 +15,7 @@ export default class GroupMembers extends React.Component {
     componentDidMount() {
         var { store, target } = this.props;
         store.getMembers(target.targetId, (list) => {
-            console.log(list)
+            //console.log(list)
             this.setState({
                 members: list
             });

@@ -1,3 +1,5 @@
+let Utils = require('../public/src/utils/Utils');
+
 var appData = [
     {
         key: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
@@ -18,6 +20,11 @@ var appData = [
                 userId: "admin",
                 name: "管理员",
                 password: "admin"
+            },
+            {
+                userId: "test",
+                name: "测试",
+                password: "test"
             }
         ],
         friends: [
@@ -44,7 +51,7 @@ var appData = [
         members: [
             {
                 groupId: "X000001",
-                list: ["zhanqun", "smallbyte", "admin"]
+                list: ["zhanqun", "smallbyte", "admin", "test"]
             }
         ],
         historys: new Map()
@@ -87,6 +94,17 @@ let ChatData = {
         }
         return undefined;
     },
+    getUserIdByName: function (appKey, name) {
+        var appInfo = this.getAppInfo(appKey);
+        if (appInfo && appInfo.users) {
+            var userInfo = appInfo.users.find(u => {
+                return u.name == name;
+            })
+            if (userInfo)
+                return userInfo.userId;
+        }
+        return undefined;
+    },
     checkUser: function (appKey, userId, password, callback) {
         var appInfo = this.getAppInfo(appKey);
         if (appInfo && appInfo.users) {
@@ -123,6 +141,26 @@ let ChatData = {
         }
         return [];
     },
+    isFriend: function (appKey, userId, friendId) {
+        var friends = this.getFriends(appKey, userId);
+        return friends.indexOf(friendId) >= 0;
+    },
+    addFriend: function (appKey, userId, friendId) {
+        var appInfo = this.getAppInfo(appKey);
+        if (appInfo && appInfo.friends) {
+            var userObj = appInfo.friends.find(user => {
+                return user.userId == userId;
+            })
+            if (!userObj) {
+                appInfo.friends.push({
+                    userId: userId,
+                    list: [friendId]
+                });
+            }
+            else
+                userObj.list.push(friendId);
+        }
+    },
     getGroups: function (appKey) {
         var appInfo = this.getAppInfo(appKey);
         var groups = [];
@@ -156,6 +194,18 @@ let ChatData = {
         }
         return [];
     },
+    addGroup: function (appKey, createrId, name) {
+        var appInfo = this.getAppInfo(appKey);
+        appInfo.groups = appInfo && appInfo.groups || [];
+        var groupId = Utils.random(6);
+        appInfo.groups.push({
+            groupId: groupId,
+            name: name,
+        });
+        //console.log(appInfo.groups);
+        this.joinGroup(appKey, groupId, createrId);
+        return this.getGroupInfo(appKey, groupId);
+    },
     getUserGroups: function (appKey, userId) {
         var appInfo = this.getAppInfo(appKey);
         var groupIds = [];
@@ -165,7 +215,7 @@ let ChatData = {
                     groupIds.push(group.groupId);
             });
         }
-        console.log(groupIds);
+        //console.log(groupIds);
         return groupIds;
     },
     getHistorys: function (appKey, key) {
@@ -199,7 +249,15 @@ let ChatData = {
             var groupObj = appInfo.members.find(group => {
                 return group.groupId == groupId;
             })
-            groupObj && groupObj.list && groupObj.list.push(userId);
+            //console.log("groupObj", groupObj);
+            if (groupObj && groupObj.list)
+                groupObj.list.push(userId);
+            else {
+                appInfo.members.push({
+                    groupId: groupId,
+                    list: [userId]
+                });
+            }
         }
     }
 };
