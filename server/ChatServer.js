@@ -194,6 +194,15 @@ ChatServer.prototype._signIn = function (socket, user, callback) {
         return;
     })) {
         var userInfo = self.userInfos.get(user.userId);
+        if (!userInfo) {
+            userInfo = {
+                token: Utils.guid(),
+                sockets: []
+            };
+            self.userInfos.set(user.userId, userInfo);
+        }
+        if (!userInfo.sockets)
+            userInfo.sockets = [];
         userInfo.sockets.push(socket);
         self.sockets.set(socket, user.userId);
         var conversations = self._getConversations(user.userId);
