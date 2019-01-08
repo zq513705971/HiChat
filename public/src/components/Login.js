@@ -72,7 +72,7 @@ export default class Login extends React.Component {
                             </div>
                             <div className="other">
                                 <div className="register" onClick={this._register}>注册</div>
-                                <div className="forget" onClick={this._forget}>忘记密码</div>
+                                {/* <div className="forget" onClick={this._forget}>忘记密码</div> */}
                             </div>
                             <div className="warning">
                                 本系统为测试学习使用，不保留用户数据！
@@ -82,12 +82,12 @@ export default class Login extends React.Component {
                             this.setState({
                                 register: false
                             });
-                        }} /> :
-                            <ForgetPassword store={store} onClose={() => {
-                                this.setState({
-                                    forget: false
-                                });
-                            }} />
+                        }} /> : undefined
+                    // <ForgetPassword store={store} onClose={() => {
+                    //     this.setState({
+                    //         forget: false
+                    //     });
+                    // }} />
                 }
                 <div className="github">
                     <div className="triangle"></div>

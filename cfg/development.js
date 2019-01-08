@@ -2,11 +2,14 @@
 let webpack = require('webpack');
 let path = require('path');
 let miniCssExtractPlugin = require("mini-css-extract-plugin");
+let define = require('./define');
 
 const publicPath = path.join(__dirname, '../public');
 
+let mode = "development";
+
 let config = {
-    mode: 'development',
+    mode: mode,
     entry: {
         app: `${publicPath}/src/app.js`
     },
@@ -15,6 +18,9 @@ let config = {
         path: `${publicPath}/dist`
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.define': JSON.stringify(define[mode])
+        }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new miniCssExtractPlugin({

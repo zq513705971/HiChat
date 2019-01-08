@@ -17,7 +17,16 @@ class ChatStore {
     @observable isTyping = false;
     @observable socket = undefined;
     @observable selectedTarget = undefined;
+
     constructor() {
+        this.define = process.env.define;
+
+        this.server = "http://my.smallbyte.cn:3000/";
+        if (this.define) {
+            this.server = this.define.server || this.server;
+            this.loginedUser.userId = this.define.userId || "";
+            this.loginedUser.password = this.define.password || "";
+        }
         this._connect();
     }
 
@@ -30,7 +39,9 @@ class ChatStore {
 
     _connect = () => {
         var self = this;
-        self.socket = io.connect('http://my.smallbyte.cn:3000/' + this.appKey, {});
+        var url = self.server + this.appKey;
+        console.log("url", url);
+        self.socket = io.connect(url, {});
         var socket = self.socket;
         //console.log(socket);
         socket.on('connect', function () {
